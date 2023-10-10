@@ -4,12 +4,16 @@ import (
 	"errors"
 	"fmt"
 	"kartverket.no/smseagle-proxy/alerter"
+	"kartverket.no/smseagle-proxy/notifier"
 	"net/http"
 	"os"
 )
 
 func main() {
-	http.HandleFunc("/webhook", alerter.HandleWebhook)
+	smseagle := notifier.NewNotifier()
+
+	grafana := alerter.NewGrafana(smseagle)
+	http.HandleFunc("/webhook", grafana.HandleWebhook)
 
 	err := http.ListenAndServe(":8080", nil)
 

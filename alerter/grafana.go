@@ -30,6 +30,19 @@ type GrafanaWebhook struct {
 	Alerts  []GrafanaAlert `json:"alerts"`
 }
 
+type Notifier interface {
+	Notify(message *SMSEagleMessage) error
+}
+type Grafana struct {
+	notifier Notifier
+}
+
+func NewGrafana(notifier Notifier) *Grafana {
+	return &Grafana{
+		notifier: notifier,
+	}
+}
+
 func parseGrafanaWebhook(r *http.Request) (*GrafanaWebhook, error) {
 	var webhook GrafanaWebhook
 	err := json.NewDecoder(r.Body).Decode(&webhook)
@@ -39,7 +52,7 @@ func parseGrafanaWebhook(r *http.Request) (*GrafanaWebhook, error) {
 	return &webhook, nil
 }
 
-func HandleWebhook(w http.ResponseWriter, r *http.Request) {
+func (g Grafana) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		io.WriteString(w, "Method not allowed")
@@ -56,7 +69,7 @@ func HandleWebhook(w http.ResponseWriter, r *http.Request) {
 
 	message := mapAlertToSMSEagleMessage(webhook)
 
-	err = Notify(message)
+	err = g.notifier.Notify(message)
 	if err != nil {
 		panic("something")
 	}

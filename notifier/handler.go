@@ -13,7 +13,13 @@ const (
 
 type Receiver int64
 
-func Notify(message *SMSEagleMessage) error {
+type SMSEagle struct{}
+
+func NewNotifier() *SMSEagle {
+	return &SMSEagle{}
+}
+
+func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 	var baseUrl string
 	var accessToken string
 	var phoneNumber string
