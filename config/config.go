@@ -1,4 +1,4 @@
-package notifier
+package config
 
 import (
 	"fmt"
@@ -6,20 +6,20 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfg config
-
-type config struct {
-	Appdrift           phoneConfig `mapstructure:"app-drift"`
-	InfrastrukturDrift phoneConfig `mapstructure:"infrastruktur-drift"`
+type ProxyConfig struct {
+	AppdriftPhoneNumber string         `mapstructure:"app-drift-phone-number"`
+	InfraPhoneNumber    string         `mapstructure:"infra-drift-phone-number"`
+	Call                SMSEagleConfig `mapstructure:"call"`
+	SMS                 SMSEagleConfig `mapstructure:"sms"`
 }
 
-type phoneConfig struct {
-	PhoneNumber string `mapstructure:"phone-number"`
+type SMSEagleConfig struct {
 	AccessToken string `mapstructure:"access-token"`
 	Url         string `mapstructure:"url"`
 }
 
-func init() {
+func Read() *ProxyConfig {
+	var cfg ProxyConfig
 	viper.SetConfigFile("config.yaml")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
@@ -37,4 +37,6 @@ func init() {
 	if err := validate.Struct(&cfg); err != nil {
 		fmt.Errorf("missing config: %w", err)
 	}
+
+	return &cfg
 }

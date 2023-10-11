@@ -1,19 +1,20 @@
-package notifier
+package smseagle
 
 import (
 	"fmt"
+	"kartverket.no/smseagle-proxy/config"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func setupSuite(tb testing.TB) func(t testing.TB) {
-	cfg = config{
-		Appdrift: phoneConfig{
+	config.cfg = config.config{
+		Appdrift: config.phoneConfig{
 			PhoneNumber: "+123",
 			AccessToken: "apptoken",
 		},
-		InfrastrukturDrift: phoneConfig{
+		InfrastrukturDrift: config.phoneConfig{
 			PhoneNumber: "+345",
 			AccessToken: "infratoken",
 		},
@@ -21,7 +22,7 @@ func setupSuite(tb testing.TB) func(t testing.TB) {
 
 	// teardown
 	return func(tb testing.TB) {
-		cfg = config{}
+		config.cfg = config.config{}
 	}
 }
 func TestNotify_should_send_sms_to_appdrift(t *testing.T) {
@@ -45,7 +46,7 @@ func TestNotify_should_send_sms_to_appdrift(t *testing.T) {
 	}))
 
 	defer server.Close()
-	cfg.Appdrift.Url = server.URL
+	config.cfg.Appdrift.Url = server.URL
 
 	err := Notify(&message)
 
@@ -75,7 +76,7 @@ func TestNotify_should_send_sms_to_infradrift(t *testing.T) {
 	}))
 
 	defer server.Close()
-	cfg.InfrastrukturDrift.Url = server.URL
+	config.cfg.InfrastrukturDrift.Url = server.URL
 
 	err := Notify(&message)
 
@@ -121,7 +122,7 @@ func TestNotify_should_send_sms_and_call_infradrift(t *testing.T) {
 	server := httptest.NewServer(mux)
 
 	defer server.Close()
-	cfg.InfrastrukturDrift.Url = server.URL
+	config.cfg.InfrastrukturDrift.Url = server.URL
 
 	err := Notify(&message)
 

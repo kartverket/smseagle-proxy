@@ -6,22 +6,23 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
 	"kartverket.no/smseagle-proxy/alerter"
-	"kartverket.no/smseagle-proxy/notifier"
+	"kartverket.no/smseagle-proxy/config"
+	"kartverket.no/smseagle-proxy/smseagle"
 	"net/http"
 	"os"
 )
 
-func (mock *mockNotifier) Notify(message *notifier.SMSEagleMessage) error {
+func (mock *mockNotifier) Notify(message *smseagle.SMSEagleMessage) error {
 	mock.message = *message
 	return nil
 }
 
 type mockNotifier struct {
-	message notifier.SMSEagleMessage
+	message smseagle.SMSEagleMessage
 }
 
 var _ = Describe("Grafana", func() {
-
+	cfg := config.ProxyConfig{}
 	var server *ghttp.Server
 	var grafana *alerter.Grafana
 	var rawWebhook []byte
@@ -32,7 +33,7 @@ var _ = Describe("Grafana", func() {
 	BeforeEach(func() {
 		server = ghttp.NewServer()
 		mock = mockNotifier{}
-		grafana = alerter.NewGrafana(&mock)
+		grafana = alerter.NewGrafana(&mock, &cfg)
 		server.AppendHandlers(grafana.HandleWebhook)
 	})
 	// close server, reset structs
@@ -59,7 +60,7 @@ var _ = Describe("Grafana", func() {
 				Expect(mock.message.Call).Should(Equal(false))
 			})
 			It("should go to appdrift", func() {
-				Expect(mock.message.Receiver).Should(Equal(notifier.Appdrift))
+				Expect(mock.message.Receiver).Should(Equal(smseagle.Appdrift))
 			})
 			It("message should be correct", func() {
 				Expect(mock.message.Message).Should(Equal("[FIRING:6] skyline Test (istiod http-monitoring pilot true)"))

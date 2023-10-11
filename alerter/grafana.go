@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	. "kartverket.no/smseagle-proxy/notifier"
+	"kartverket.no/smseagle-proxy/config"
+	. "kartverket.no/smseagle-proxy/smseagle"
 	"net/http"
 	"time"
 )
@@ -35,11 +36,13 @@ type Notifier interface {
 }
 type Grafana struct {
 	notifier Notifier
+	cfg      *config.ProxyConfig
 }
 
-func NewGrafana(notifier Notifier) *Grafana {
+func NewGrafana(notifier Notifier, cfg *config.ProxyConfig) *Grafana {
 	return &Grafana{
 		notifier: notifier,
+		cfg:      cfg,
 	}
 }
 
