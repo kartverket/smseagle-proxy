@@ -52,7 +52,7 @@ func parseGrafanaWebhook(r *http.Request) (*GrafanaWebhook, error) {
 	return &webhook, nil
 }
 
-func (g Grafana) HandleWebhook(w http.ResponseWriter, r *http.Request) {
+func (g *Grafana) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		io.WriteString(w, "Method not allowed")
@@ -75,7 +75,8 @@ func (g Grafana) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func shouldCall(critical bool) bool {
+// Within certain hours all calls and sms should go to infrastructure
+func contactInfrastructure() bool {
 	timeUtc := time.Now()
 	location, err := time.LoadLocation("Europe/Oslo")
 	if err != nil {
@@ -83,24 +84,23 @@ func shouldCall(critical bool) bool {
 	}
 	localTime := timeUtc.In(location)
 
-	isCallHours := localTime.Hour() < 8 && localTime.Hour() > 22
-
-	return isCallHours && critical
+	return localTime.Hour() < 8 && localTime.Hour() > 22
 }
 
 func mapAlertToSMSEagleMessage(webhook *GrafanaWebhook) *SMSEagleMessage {
 	var message SMSEagleMessage
 	// !This assumes we are grouping alerts on alertname!
 	// If we do, the GeneratorURL will be identical on all alerts and link us to the firing alert overview page.
-	// SMS is limited to 160 characters, so we have to keep it short.
-	message.Message = fmt.Sprintf("%s, Alert Link: %s", webhook.Title, webhook.Alerts[0].GeneratorURL)[0:159]
+	// SMS is limited to 160 characters, over that the message will send as multipart sms messages.
+	message.Message = fmt.Sprintf("%s", webhook.Title)
 
 	isCritical := webhook.Alerts[0].Labels["severity"] == "critical"
 	isNodeExporter := webhook.Alerts[0].Labels["source"] == "node-exporter"
 	isKubeStateMetrics := webhook.Alerts[0].Labels["source"] == "kube-state-metrics"
 
-	if shouldCall(isCritical) {
-		message.Call = true
+	message.Call = isCritical
+
+	if contactInfrastructure() {
 		message.Receiver = Infrastruktur
 	} else if isNodeExporter || isKubeStateMetrics {
 		message.Receiver = Infrastruktur
