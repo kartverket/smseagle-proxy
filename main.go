@@ -3,9 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
-	"kartverket.no/smseagle-proxy/alerter"
-	"kartverket.no/smseagle-proxy/config"
-	"kartverket.no/smseagle-proxy/smseagle"
+	"kartverket.no/smseagle-proxy/pkg/alerter"
+	"kartverket.no/smseagle-proxy/pkg/config"
+	"kartverket.no/smseagle-proxy/pkg/smseagle"
 	"net/http"
 	"os"
 )
@@ -15,7 +15,8 @@ func main() {
 	smseagle := smseagle.NewSMSEagle(cfg)
 	grafana := alerter.NewGrafana(smseagle, cfg)
 
-	http.HandleFunc("/webhook", grafana.HandleWebhook)
+	http.HandleFunc("/webhook/sms", grafana.HandleSMS)
+	http.HandleFunc("/webhook/call", grafana.HandleCall)
 
 	err := http.ListenAndServe(":8080", nil)
 

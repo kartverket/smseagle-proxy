@@ -1,16 +1,26 @@
 package smseagle
 
-import "kartverket.no/smseagle-proxy/config"
+import (
+	"kartverket.no/smseagle-proxy/pkg/config"
+)
 
 type SMSEagleMessage struct {
-	Call     bool
-	Receiver Receiver
-	Message  string
+	Receiver    Receiver
+	Message     string
+	ContactType ContactType
 }
 
 const (
-	Appdrift Receiver = iota
-	Infrastruktur
+	SMS ContactType = iota
+	Call
+)
+
+type ContactType int64
+
+const (
+	Invalid Receiver = iota
+	Appdrift
+	Infrastrukturdrift
 )
 
 type Receiver int64
@@ -39,11 +49,10 @@ func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 		return err
 	}
 
-	if message.Call {
-		err = call(s.cfg, phoneNumber)
-		if err != nil {
-			return err
-		}
+	err = call(s.cfg, phoneNumber)
+	if err != nil {
+		return err
 	}
+
 	return nil
 }

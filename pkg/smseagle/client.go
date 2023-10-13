@@ -2,7 +2,7 @@ package smseagle
 
 import (
 	"fmt"
-	"kartverket.no/smseagle-proxy/config"
+	"kartverket.no/smseagle-proxy/pkg/config"
 	"net/http"
 )
 
@@ -19,7 +19,7 @@ func sendSMS(cfg *config.ProxyConfig, phoneNumber string, message string) error 
 }
 
 func call(cfg *config.ProxyConfig, phoneNumber string) error {
-	requestUrl := fmt.Sprintf("%s/http_api/call_with_termination?access_token=%s&to=%s", cfg.Call.Url, cfg.SMS.AccessToken, phoneNumber)
+	requestUrl := fmt.Sprintf("%s/http_api/call_with_termination?access_token=%s&to=%s", cfg.Call.Url, cfg.Call.AccessToken, phoneNumber)
 	res, err := http.Get(requestUrl)
 	if err != nil {
 		fmt.Printf("error making http request: %s\n", err)
