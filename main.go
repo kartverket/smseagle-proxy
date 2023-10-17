@@ -2,28 +2,42 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"kartverket.no/smseagle-proxy/pkg/alerter"
 	"kartverket.no/smseagle-proxy/pkg/config"
 	"kartverket.no/smseagle-proxy/pkg/smseagle"
+	"log/slog"
 	"net/http"
 	"os"
 )
 
+func init() {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+	slog.SetDefault(logger)
+}
+
 func main() {
 	cfg := config.Read()
+	if cfg.Debug {
+		logLevel := &slog.LevelVar{}
+		logLevel.Set(slog.LevelDebug)
+	}
+
 	smseagle := smseagle.NewSMSEagle(cfg)
 	grafana := alerter.NewGrafana(smseagle, cfg)
 
 	http.HandleFunc("/webhook/sms", grafana.HandleSMS)
 	http.HandleFunc("/webhook/call", grafana.HandleCall)
 
-	err := http.ListenAndServe(":8080", nil)
+	port := ":8080"
+	slog.Info("Starting smseagle-proxy", "port", port)
+	err := http.ListenAndServe(port, nil)
 
 	if errors.Is(err, http.ErrServerClosed) {
-		fmt.Printf("server closed\n")
+		slog.Info("server closed\n")
 	} else if err != nil {
-		fmt.Printf("error starting server: %s\n", err)
+		slog.Error("error starting server:", "error", err)
 		os.Exit(1)
 	}
 }

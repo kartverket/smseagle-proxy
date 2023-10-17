@@ -1,9 +1,10 @@
 package config
 
 import (
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/spf13/viper"
+	"log/slog"
+	"os"
 )
 
 type ProxyConfig struct {
@@ -11,6 +12,7 @@ type ProxyConfig struct {
 	InfraPhoneNumber    string         `mapstructure:"infra-drift-phone-number"`
 	Call                SMSEagleConfig `mapstructure:"call"`
 	SMS                 SMSEagleConfig `mapstructure:"sms"`
+	Debug               bool           `mapstructure:"debug"`
 }
 
 type SMSEagleConfig struct {
@@ -25,17 +27,20 @@ func Read() *ProxyConfig {
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Errorf("fatal error config file: %w", err)
+		slog.Error("fatal error config file: %w", err)
+		os.Exit(1)
 	}
 	err = viper.Unmarshal(&cfg)
 
 	if err != nil {
-		fmt.Errorf("something went wrong unmarshaling config: %w", err)
+		slog.Error("something went wrong unmarshaling config: %w", err)
+		os.Exit(1)
 	}
 
 	validate := validator.New()
 	if err := validate.Struct(&cfg); err != nil {
-		fmt.Errorf("missing config: %w", err)
+		slog.Error("missing config: %w", err)
+		os.Exit(1)
 	}
 
 	return &cfg
