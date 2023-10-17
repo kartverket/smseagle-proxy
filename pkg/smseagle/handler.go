@@ -2,6 +2,7 @@ package smseagle
 
 import (
 	"kartverket.no/smseagle-proxy/pkg/config"
+	"log/slog"
 )
 
 type SMSEagleMessage struct {
@@ -46,11 +47,13 @@ func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 
 	err := sendSMS(s.cfg, phoneNumber, message.Message)
 	if err != nil {
+		slog.Error("Error sending sms", "error", err)
 		return err
 	}
 
 	err = call(s.cfg, phoneNumber)
 	if err != nil {
+		slog.Error("Error sending call request", "error", err)
 		return err
 	}
 

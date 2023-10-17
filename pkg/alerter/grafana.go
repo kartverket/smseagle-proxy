@@ -6,6 +6,7 @@ import (
 	"io"
 	"kartverket.no/smseagle-proxy/pkg/config"
 	. "kartverket.no/smseagle-proxy/pkg/smseagle"
+	"log/slog"
 	"net/http"
 )
 
@@ -50,11 +51,13 @@ func NewGrafana(notifier Notifier, cfg *config.ProxyConfig) *Grafana {
 }
 
 func parseGrafanaWebhook(r *http.Request) (*GrafanaWebhook, error) {
+	slog.Debug("Parsing", "request", r)
 	var webhook OncallWebhook
 	err := json.NewDecoder(r.Body).Decode(&webhook)
 	if err != nil {
 		return nil, err
 	}
+	slog.Debug("Parsed %w", "webhook", &webhook)
 	return &webhook.GrafanaWebhook, nil
 }
 
@@ -75,13 +78,14 @@ func (g *Grafana) handleRequest(w http.ResponseWriter, r *http.Request, c Contac
 
 	webhook, err := parseGrafanaWebhook(r)
 	if err != nil {
+		slog.Error("decoding webhook failed", "error", err)
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, "Invalid request body")
 		return
 	}
 
 	receiver := getReceiver(r.Header.Get("team"))
-
+	slog.Debug("Checking header for receiver", "receiver", receiver)
 	if receiver == Invalid {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, "Missing or invalid team header")
@@ -96,7 +100,7 @@ func (g *Grafana) handleRequest(w http.ResponseWriter, r *http.Request, c Contac
 
 	err = g.notifier.Notify(&message)
 	if err != nil {
-		panic("something")
+		slog.Error("Failure to notify", "error", err)
 	}
 }
 

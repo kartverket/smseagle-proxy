@@ -1,0 +1,8 @@
+version: "3.7"
+services:
+  app:
+    image: ghcr.io/kartverket/smseagle-proxy:0.0.4-SNAPSHOT-8f48be2
+    volumes:
+      - type: bind
+        source: ./config.yaml
+        target: /config.yaml
