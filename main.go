@@ -12,7 +12,7 @@ import (
 
 func init() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
+		Level: slog.LevelDebug,
 	}))
 	slog.SetDefault(logger)
 }
@@ -25,6 +25,7 @@ func main() {
 	if cfg.Debug {
 		logLevel := &slog.LevelVar{}
 		logLevel.Set(slog.LevelDebug)
+		slog.Debug("Debug mode on")
 	}
 
 	smseagle := smseagle.NewSMSEagle(cfg)

@@ -94,7 +94,7 @@ func (g *Grafana) handleRequest(w http.ResponseWriter, r *http.Request, c Contac
 
 	message := SMSEagleMessage{
 		Receiver:    receiver,
-		Message:     fmt.Sprintf("%s", webhook.Title),
+		Message:     fmt.Sprintf("test: %s", webhook.Title),
 		ContactType: c,
 	}
 
