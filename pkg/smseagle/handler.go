@@ -45,16 +45,20 @@ func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 		phoneNumber = s.cfg.InfraPhoneNumber
 	}
 
-	err := sendSMS(s.cfg, phoneNumber, message.Message)
-	if err != nil {
-		slog.Error("Error sending sms", "error", err)
-		return err
-	}
-
-	err = call(s.cfg, phoneNumber)
-	if err != nil {
-		slog.Error("Error sending call request", "error", err)
-		return err
+	if message.ContactType == SMS {
+		err := sendSMS(s.cfg, phoneNumber, message.Message)
+		if err != nil {
+			slog.Error("Error sending sms", "error", err)
+			return err
+		}
+	} else if message.ContactType == Call {
+		err := call(s.cfg, phoneNumber)
+		if err != nil {
+			slog.Error("Error sending call request", "error", err)
+			return err
+		}
+	} else {
+		slog.Error("Error invalid contact type.", "contact type", message.ContactType)
 	}
 
 	return nil

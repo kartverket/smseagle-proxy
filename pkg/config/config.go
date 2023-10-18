@@ -22,12 +22,15 @@ type SMSEagleConfig struct {
 
 func Read() *ProxyConfig {
 	var cfg ProxyConfig
-	home, err := os.UserHomeDir()
-	viper.AddConfigPath(home)
-	viper.SetConfigFile("config.yaml")
+	cfgDir := "/opt/smseagle-proxy"
+	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	slog.Info("home dir", "home", home)
-	err = viper.ReadInConfig()
+	viper.AddConfigPath(cfgDir)
+	viper.AddConfigPath(".")
+
+	slog.Info("Looking for config", slog.String("directory", cfgDir))
+
+	err := viper.ReadInConfig()
 	if err != nil {
 		slog.Error("fatal error config file", "error", err)
 		os.Exit(1)
