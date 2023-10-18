@@ -1,8 +1,9 @@
 version: "3.7"
 services:
   app:
-    image: ghcr.io/kartverket/smseagle-proxy:0.0.4-SNAPSHOT-8f48be2
+    image: ghcr.io/kartverket/smseagle-proxy:0.0.5-SNAPSHOT-78e782b
+    ports: ["8080:8080"]
     volumes:
       - type: bind
         source: ./config.yaml
-        target: /config.yaml
+        target: /home/scratchuser/config.yaml
