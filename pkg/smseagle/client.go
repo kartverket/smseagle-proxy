@@ -14,7 +14,7 @@ func sendSMS(cfg *config.ProxyConfig, phoneNumber string, message string) error 
 	if err != nil {
 		return err
 	}
-	slog.Debug("sms request succesfull", "response", res)
+	slog.Debug("sms request succesful", "response code", res.StatusCode, "response text", res.Body)
 	return nil
 }
 
@@ -25,6 +25,6 @@ func call(cfg *config.ProxyConfig, phoneNumber string) error {
 	if err != nil {
 		return err
 	}
-	slog.Debug("Call request successful", "response", res)
+	slog.Debug("Call request successful", "response", res.Body)
 	return nil
 }

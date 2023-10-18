@@ -1,6 +1,6 @@
 FROM golang:1.21 as builder
 RUN adduser -u 10001 scratchuser
-
+RUN ls /etc/ssl/certs
 FROM scratch
 COPY smseagle-proxy /
 COPY --from=builder /etc/passwd /etc/passwd

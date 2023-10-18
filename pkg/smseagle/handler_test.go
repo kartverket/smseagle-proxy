@@ -39,8 +39,9 @@ var _ = Describe("Handler", func() {
 
 	Context("appdrift alert", func() {
 		It("should make get requests with correct queries to sms and call", func() {
-			msg := SMSEagleMessage{Message: "hei", Receiver: Appdrift}
-			expectedSMSQuery := fmt.Sprintf("access_token=%s&to=%s&message=%s", cfg.SMS.AccessToken, cfg.AppdriftPhoneNumber, msg.Message)
+			msg := SMSEagleMessage{Message: "hei pa deg", Receiver: Appdrift}
+			exptectedSMSMsg := "hei+pa+deg"
+			expectedSMSQuery := fmt.Sprintf("access_token=%s&to=%s&message=%s", cfg.SMS.AccessToken, cfg.AppdriftPhoneNumber, exptectedSMSMsg)
 			expectedCallQuery := fmt.Sprintf("access_token=%s&to=%s", cfg.Call.AccessToken, cfg.AppdriftPhoneNumber)
 			server.AppendHandlers(
 				ghttp.CombineHandlers(
