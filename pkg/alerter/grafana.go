@@ -11,28 +11,15 @@ import (
 )
 
 type OncallWebhook struct {
-	GrafanaWebhook GrafanaWebhook `json:"alert_payload"`
+	AlertGroup AlertGroup `json:"alert_group"`
 }
 
-type GrafanaWebhook struct {
-	Title   string         `json:"title"`
-	State   string         `json:"state"`
-	Message string         `json:"message"`
-	Alerts  []GrafanaAlert `json:"alerts"`
+type AlertGroup struct {
+	Permalinks OncallPermalink `json:"permalinks"`
 }
 
-type GrafanaAlert struct {
-	Status       string             `json:"status"`
-	Labels       map[string]string  `json:"labels"`
-	Annotations  map[string]string  `json:"annotations"`
-	StartsAt     string             `json:"startsAt"`
-	EndsAt       string             `json:"endsAt"`
-	GeneratorURL string             `json:"generatorURL"`
-	Fingerpriot  string             `json:"fingerprint"`
-	SilenceURL   string             `json:"silenceURL"`
-	DashboardURL string             `json:"dashboardURL"`
-	PanelURL     string             `json:"panelURL"`
-	Values       map[string]float32 `json:"values"`
+type OncallPermalink struct {
+	Web string `json:"web"`
 }
 
 type Notifier interface {
@@ -50,7 +37,7 @@ func NewGrafana(notifier Notifier, cfg *config.ProxyConfig) *Grafana {
 	}
 }
 
-func parseGrafanaWebhook(r *http.Request) (*GrafanaWebhook, error) {
+func parseOncallWebhook(r *http.Request) (*OncallWebhook, error) {
 	slog.Debug("Parsing", "request", r)
 	var webhook OncallWebhook
 	err := json.NewDecoder(r.Body).Decode(&webhook)
@@ -58,7 +45,7 @@ func parseGrafanaWebhook(r *http.Request) (*GrafanaWebhook, error) {
 		return nil, err
 	}
 	slog.Debug("Parsed %w", "webhook", &webhook)
-	return &webhook.GrafanaWebhook, nil
+	return &webhook, nil
 }
 
 func (g *Grafana) HandleCall(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +63,7 @@ func (g *Grafana) handleRequest(w http.ResponseWriter, r *http.Request, c Contac
 		return
 	}
 
-	webhook, err := parseGrafanaWebhook(r)
+	webhook, err := parseOncallWebhook(r)
 	if err != nil {
 		slog.Error("decoding webhook failed", "error", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -94,7 +81,7 @@ func (g *Grafana) handleRequest(w http.ResponseWriter, r *http.Request, c Contac
 
 	message := SMSEagleMessage{
 		Receiver:    receiver,
-		Message:     fmt.Sprintf("test: %s", webhook.Title),
+		Message:     fmt.Sprintf("Ny alarm: %s", webhook.AlertGroup.Permalinks.Web),
 		ContactType: c,
 	}
 

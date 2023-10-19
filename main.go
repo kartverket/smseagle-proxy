@@ -10,9 +10,14 @@ import (
 	"os"
 )
 
+var logLevel *slog.LevelVar
+
 func init() {
+	logLevel = &slog.LevelVar{}
+	logLevel.Set(slog.LevelInfo)
+
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelDebug,
+		Level: logLevel,
 	}))
 	slog.SetDefault(logger)
 }
@@ -20,10 +25,8 @@ func init() {
 func main() {
 	port := ":8080"
 	slog.Info("Starting smseagle-proxy", "port", port)
-
 	cfg := config.Read()
 	if cfg.Debug {
-		logLevel := &slog.LevelVar{}
 		logLevel.Set(slog.LevelDebug)
 		slog.Debug("Debug mode on")
 	}

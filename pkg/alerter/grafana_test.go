@@ -90,7 +90,7 @@ var _ = Describe("Grafana", func() {
 				Expect(mock.message.Receiver).Should(Equal(smseagle.Infrastrukturdrift))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Instance localhost:8082 down"))
+				Expect(mock.message.Message).Should(Equal("Ny alarm: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
 			})
 			It("should have sms contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
@@ -110,7 +110,7 @@ var _ = Describe("Grafana", func() {
 				Expect(mock.message.Receiver).Should(Equal(smseagle.Appdrift))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Instance localhost:8082 down"))
+				Expect(mock.message.Message).Should(Equal("Ny alarm: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
 			})
 			It("should have sms contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
@@ -140,7 +140,7 @@ var _ = Describe("Grafana", func() {
 				Expect(mock.message.Receiver).Should(Equal(smseagle.Infrastrukturdrift))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Instance localhost:8082 down"))
+				Expect(mock.message.Message).Should(Equal("Ny alarm: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
 			})
 			It("should have call contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.Call))
@@ -160,7 +160,7 @@ var _ = Describe("Grafana", func() {
 				Expect(mock.message.Receiver).Should(Equal(smseagle.Appdrift))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Instance localhost:8082 down"))
+				Expect(mock.message.Message).Should(Equal("Ny alarm: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
 			})
 			It("should have call contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.Call))
