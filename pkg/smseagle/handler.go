@@ -1,8 +1,10 @@
 package smseagle
 
 import (
+	"crypto/tls"
 	"kartverket.no/smseagle-proxy/pkg/config"
 	"log/slog"
+	"net/http"
 	"strings"
 )
 
@@ -46,15 +48,19 @@ func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 		phoneNumber = s.cfg.InfraPhoneNumber
 	}
 
+	client := &http.Client{Transport: &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}}
+
 	if message.ContactType == SMS {
 		msg := strings.ReplaceAll(message.Message, " ", "+")
-		err := sendSMS(s.cfg, phoneNumber, msg)
+		err := sendSMS(s.cfg, phoneNumber, msg, client)
 		if err != nil {
 			slog.Error("Error sending sms", "error", err)
 			return err
 		}
 	} else if message.ContactType == Call {
-		err := call(s.cfg, phoneNumber)
+		err := call(s.cfg, phoneNumber, client)
 		if err != nil {
 			slog.Error("Error sending call request", "error", err)
 			return err

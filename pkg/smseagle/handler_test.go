@@ -21,11 +21,11 @@ var _ = Describe("Handler", func() {
 			AppdriftPhoneNumber: "123",
 			InfraPhoneNumber:    "456",
 			Call: config.SMSEagleConfig{
-				Url:         server.Addr(),
+				Url:         server.URL(),
 				AccessToken: "calltoken",
 			},
 			SMS: config.SMSEagleConfig{
-				Url:         server.Addr(),
+				Url:         server.URL(),
 				AccessToken: "smstoken",
 			},
 		}
