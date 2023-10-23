@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 	"log/slog"
 	"os"
+	"strings"
 )
 
 type ProxyConfig struct {
@@ -27,6 +28,9 @@ func Read() *ProxyConfig {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(cfgDir)
 	viper.AddConfigPath(".")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	viper.SetEnvPrefix("SP")
+	viper.AutomaticEnv()
 
 	slog.Info("Looking for config", slog.String("directory", cfgDir))
 

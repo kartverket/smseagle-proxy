@@ -23,7 +23,7 @@ func init() {
 }
 
 func main() {
-	port := ":8080"
+	port := ":8095"
 	slog.Info("Starting smseagle-proxy", "port", port)
 	cfg := config.Read()
 	if cfg.Debug {

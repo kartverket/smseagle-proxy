@@ -24,3 +24,4 @@ go.work
 config.yaml
 smseagle-proxy
 dist
+local_testing/.env.smseagle-proxy
