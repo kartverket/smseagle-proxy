@@ -25,13 +25,13 @@ type OncallPermalink struct {
 type Notifier interface {
 	Notify(message *SMSEagleMessage) error
 }
-type Grafana struct {
+type GrafanaOncall struct {
 	notifier Notifier
 	cfg      *config.ProxyConfig
 }
 
-func NewGrafana(notifier Notifier, cfg *config.ProxyConfig) *Grafana {
-	return &Grafana{
+func NewGrafanaOncall(notifier Notifier, cfg *config.ProxyConfig) *GrafanaOncall {
+	return &GrafanaOncall{
 		notifier: notifier,
 		cfg:      cfg,
 	}
@@ -48,15 +48,15 @@ func parseOncallWebhook(r *http.Request) (*OncallWebhook, error) {
 	return &webhook, nil
 }
 
-func (g *Grafana) HandleCall(w http.ResponseWriter, r *http.Request) {
+func (g *GrafanaOncall) HandleCall(w http.ResponseWriter, r *http.Request) {
 	g.handleRequest(w, r, Call)
 }
 
-func (g *Grafana) HandleSMS(w http.ResponseWriter, r *http.Request) {
+func (g *GrafanaOncall) HandleSMS(w http.ResponseWriter, r *http.Request) {
 	g.handleRequest(w, r, SMS)
 }
 
-func (g *Grafana) handleRequest(w http.ResponseWriter, r *http.Request, c ContactType) {
+func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c ContactType) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		io.WriteString(w, "Method not allowed")

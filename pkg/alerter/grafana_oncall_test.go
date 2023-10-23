@@ -23,10 +23,10 @@ type mockNotifier struct {
 	notifyCalled bool
 }
 
-var _ = Describe("Grafana", func() {
+var _ = Describe("GrafanaOncall", func() {
 	cfg := config.ProxyConfig{}
 	var server *ghttp.Server
-	var grafana *alerter.Grafana
+	var grafana *alerter.GrafanaOncall
 	var rawWebhook []byte
 	var err error
 	var mock mockNotifier
@@ -37,14 +37,14 @@ var _ = Describe("Grafana", func() {
 	BeforeEach(func() {
 		server = ghttp.NewServer()
 		mock = mockNotifier{}
-		grafana = alerter.NewGrafana(&mock, &cfg)
+		grafana = alerter.NewGrafanaOncall(&mock, &cfg)
 		client = &http.Client{}
 	})
 	// close server, reset structs
 	AfterEach(func() {
 		server.Close()
 		mock = mockNotifier{}
-		grafana = &alerter.Grafana{}
+		grafana = &alerter.GrafanaOncall{}
 	})
 	It("loads file correctly", func() {
 		rawWebhook, err = os.ReadFile("../../test_files/grafana_webhooks/oncall_webhook.json")

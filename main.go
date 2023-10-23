@@ -32,10 +32,10 @@ func main() {
 	}
 
 	smseagle := smseagle.NewSMSEagle(cfg)
-	grafana := alerter.NewGrafana(smseagle, cfg)
+	oncall := alerter.NewGrafanaOncall(smseagle, cfg)
 
-	http.HandleFunc("/webhook/sms", grafana.HandleSMS)
-	http.HandleFunc("/webhook/call", grafana.HandleCall)
+	http.HandleFunc("/webhook/sms", oncall.HandleSMS)
+	http.HandleFunc("/webhook/call", oncall.HandleCall)
 
 	err := http.ListenAndServe(port, nil)
 
