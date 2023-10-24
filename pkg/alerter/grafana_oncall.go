@@ -8,14 +8,33 @@ import (
 	. "kartverket.no/smseagle-proxy/pkg/smseagle"
 	"log/slog"
 	"net/http"
+	"time"
 )
 
 type OncallWebhook struct {
 	AlertGroup AlertGroup `json:"alert_group"`
+	Event      Event      `json:"event"`
 }
 
+type Event struct {
+	Type EventType `json:"type"`
+}
+
+type EventType string
+
+const (
+	Escalation EventType = "escalation"
+	Resolve    EventType = "resolve"
+)
+
 type AlertGroup struct {
-	Permalinks OncallPermalink `json:"permalinks"`
+	Id          string          `json:"id"`
+	Title       string          `json:"title"`
+	State       string          `json:"state"`
+	Created     time.Time       `json:"created_at"`
+	AlertsCount int             `json:"alerts_count"`
+	Permalinks  OncallPermalink `json:"permalinks"`
+	Resolved    time.Time       `json:"resolved_at"`
 }
 
 type OncallPermalink struct {
@@ -81,7 +100,7 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 
 	message := SMSEagleMessage{
 		Receiver:    receiver,
-		Message:     fmt.Sprintf("Ny alarm: %s", webhook.AlertGroup.Permalinks.Web),
+		Message:     createMessage(webhook),
 		ContactType: c,
 	}
 
@@ -99,5 +118,19 @@ func getReceiver(r string) Receiver {
 		return Infrastrukturdrift
 	default:
 		return Invalid
+	}
+}
+
+func createMessage(webhook *OncallWebhook) string {
+	if webhook.Event.Type == Escalation {
+		return fmt.Sprintf("Ny Alarm \nId: %s \nOpprettet: %s \nTittel: %s \nAntall: %d\nLenke: %s",
+			webhook.AlertGroup.Id, webhook.AlertGroup.Created.Format("2006-1-2 15:4:3"), webhook.AlertGroup.Title,
+			webhook.AlertGroup.AlertsCount, webhook.AlertGroup.Permalinks.Web)
+	} else if webhook.Event.Type == Resolve {
+		return fmt.Sprintf("Alarm løst \nId: %s \nLøst: %s \nTittel: %s \nAntall: %d \nLenke: %s",
+			webhook.AlertGroup.Id, webhook.AlertGroup.Resolved.Format("2006-1-2 15:4:3"), webhook.AlertGroup.Title,
+			webhook.AlertGroup.AlertsCount, webhook.AlertGroup.Permalinks.Web)
+	} else {
+		return ""
 	}
 }

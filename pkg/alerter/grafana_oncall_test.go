@@ -90,7 +90,7 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.Receiver).Should(Equal(smseagle.Infrastrukturdrift))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Ny alarm: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
+				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
 			})
 			It("should have sms contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
@@ -110,7 +110,7 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.Receiver).Should(Equal(smseagle.Appdrift))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Ny alarm: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
+				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
 			})
 			It("should have sms contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
@@ -140,7 +140,7 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.Receiver).Should(Equal(smseagle.Infrastrukturdrift))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Ny alarm: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
+				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
 			})
 			It("should have call contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.Call))
@@ -160,10 +160,42 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.Receiver).Should(Equal(smseagle.Appdrift))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Ny alarm: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
+				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
 			})
 			It("should have call contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.Call))
+			})
+		})
+	})
+	Describe("Resolve SMS request", func() {
+		BeforeEach(func() {
+			rawWebhook, err = os.ReadFile("../../test_files/grafana_webhooks/oncall_resolved_webhook.json")
+			Expect(err).ShouldNot(HaveOccurred())
+			req, err = http.NewRequest(http.MethodPost, server.URL()+"/webhook/sms", bytes.NewReader(rawWebhook))
+			Expect(err).ShouldNot(HaveOccurred())
+			server.RouteToHandler(http.MethodPost, "/webhook/sms", ghttp.CombineHandlers(
+				ghttp.VerifyRequest(http.MethodPost, "/webhook/sms"),
+				grafana.HandleSMS,
+			))
+		})
+		Context("Request for infrastrukturdrift is successful", func() {
+			BeforeEach(func() {
+				req.Header.Set("team", "infrastrukturdrift")
+				res, err := client.Do(req)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(res.StatusCode).Should(Equal(http.StatusOK))
+			})
+			It("should call notify", func() {
+				Expect(mock.notifyCalled).Should(Equal(true))
+			})
+			It("should go to infrastrukturdrift", func() {
+				Expect(mock.message.Receiver).Should(Equal(smseagle.Infrastrukturdrift))
+			})
+			It("message should be correct", func() {
+				Expect(mock.message.Message).Should(Equal("Alarm løst \nId: IAXB4WC5DVD9R \nLøst: 2023-10-24 11:9:11 \nTittel: [firing:3] InstanceDown  \nAntall: 1 \nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/IAXB4WC5DVD9R"))
+			})
+			It("should have sms contact type", func() {
+				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
 			})
 		})
 	})
