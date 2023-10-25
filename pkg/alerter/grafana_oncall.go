@@ -90,16 +90,16 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 		return
 	}
 
-	receiver := getReceiver(r.Header.Get("team"))
-	slog.Debug("Checking header for receiver", "receiver", receiver)
-	if receiver == Invalid {
+	phonenumber := r.Header.Get("phonenumber")
+	slog.Debug("Checking header for phonenumber", "phonenumber", phonenumber)
+	if phonenumber == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "Missing or invalid team header")
+		io.WriteString(w, "Missing or invalid phonenumber header")
 		return
 	}
 
 	message := SMSEagleMessage{
-		Receiver:    receiver,
+		PhoneNumber: phonenumber,
 		Message:     createMessage(webhook),
 		ContactType: c,
 	}
@@ -107,17 +107,6 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 	err = g.notifier.Notify(&message)
 	if err != nil {
 		slog.Error("Failure to notify", "error", err)
-	}
-}
-
-func getReceiver(r string) Receiver {
-	switch r {
-	case "appdrift":
-		return Appdrift
-	case "infrastrukturdrift":
-		return Infrastrukturdrift
-	default:
-		return Invalid
 	}
 }
 

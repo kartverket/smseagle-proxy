@@ -9,7 +9,7 @@ import (
 )
 
 type SMSEagleMessage struct {
-	Receiver    Receiver
+	PhoneNumber string
 	Message     string
 	ContactType ContactType
 }
@@ -40,14 +40,6 @@ func NewSMSEagle(cfg *config.ProxyConfig) *SMSEagle {
 }
 
 func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
-	var phoneNumber string
-
-	if message.Receiver == Appdrift {
-		phoneNumber = s.cfg.AppdriftPhoneNumber
-	} else {
-		phoneNumber = s.cfg.InfraPhoneNumber
-	}
-
 	client := &http.Client{Transport: &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}}
@@ -55,13 +47,13 @@ func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 	if message.ContactType == SMS {
 		msg := strings.ReplaceAll(message.Message, " ", "+")
 		msg = strings.ReplaceAll(msg, "\n", "%0A")
-		err := sendSMS(s.cfg, phoneNumber, msg, client)
+		err := sendSMS(s.cfg, message.PhoneNumber, msg, client)
 		if err != nil {
 			slog.Error("Error sending sms", "error", err)
 			return err
 		}
 	} else if message.ContactType == Call {
-		err := call(s.cfg, phoneNumber, client)
+		err := call(s.cfg, message.PhoneNumber, client)
 		if err != nil {
 			slog.Error("Error sending call request", "error", err)
 			return err

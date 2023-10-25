@@ -18,8 +18,6 @@ var _ = Describe("Handler", func() {
 	BeforeEach(func() {
 		server = ghttp.NewServer()
 		cfg = config.ProxyConfig{
-			AppdriftPhoneNumber: "123",
-			InfraPhoneNumber:    "456",
 			Call: config.SMSEagleConfig{
 				Url:         server.URL(),
 				AccessToken: "calltoken",
@@ -39,10 +37,10 @@ var _ = Describe("Handler", func() {
 
 	Context("appdrift alert", func() {
 		It("should make get requests with correct queries to sms and call", func() {
-			msg := SMSEagleMessage{Message: "hei pa deg", Receiver: Appdrift}
+			msg := SMSEagleMessage{Message: "hei pa deg", PhoneNumber: "123"}
 			exptectedSMSMsg := "hei+pa+deg"
-			expectedSMSQuery := fmt.Sprintf("access_token=%s&to=%s&message=%s", cfg.SMS.AccessToken, cfg.AppdriftPhoneNumber, exptectedSMSMsg)
-			expectedCallQuery := fmt.Sprintf("access_token=%s&to=%s", cfg.Call.AccessToken, cfg.AppdriftPhoneNumber)
+			expectedSMSQuery := fmt.Sprintf("access_token=%s&to=%s&message=%s", cfg.SMS.AccessToken, "123", exptectedSMSMsg)
+			expectedCallQuery := fmt.Sprintf("access_token=%s&to=%s", cfg.Call.AccessToken, "123")
 			server.AppendHandlers(
 				ghttp.CombineHandlers(
 					ghttp.VerifyRequest("GET", "/http_api/send_sms", expectedSMSQuery),

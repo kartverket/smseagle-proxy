@@ -60,7 +60,7 @@ var _ = Describe("GrafanaOncall", func() {
 				grafana.HandleSMS,
 			))
 		})
-		It("returns bad request when team header is missing", func() {
+		It("returns bad request when phonenumber header is missing", func() {
 			res, err := client.Do(req)
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(res.StatusCode).Should(Equal(http.StatusBadRequest))
@@ -76,9 +76,9 @@ var _ = Describe("GrafanaOncall", func() {
 				grafana.HandleSMS,
 			))
 		})
-		Context("Request for infrastrukturdrift is successful", func() {
+		Context("Request for 123 is successful", func() {
 			BeforeEach(func() {
-				req.Header.Set("team", "infrastrukturdrift")
+				req.Header.Set("phonenumber", "123")
 				res, err := client.Do(req)
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(res.StatusCode).Should(Equal(http.StatusOK))
@@ -86,8 +86,8 @@ var _ = Describe("GrafanaOncall", func() {
 			It("should call notify", func() {
 				Expect(mock.notifyCalled).Should(Equal(true))
 			})
-			It("should go to infrastrukturdrift", func() {
-				Expect(mock.message.Receiver).Should(Equal(smseagle.Infrastrukturdrift))
+			It("should go to 123", func() {
+				Expect(mock.message.PhoneNumber).Should(Equal("123"))
 			})
 			It("message should be correct", func() {
 				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
@@ -96,9 +96,9 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
 			})
 		})
-		Context("Request for appdrift is successful", func() {
+		Context("Request for 456 is successful", func() {
 			BeforeEach(func() {
-				req.Header.Set("team", "appdrift")
+				req.Header.Set("phonenumber", "456")
 				res, err := client.Do(req)
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(res.StatusCode).Should(Equal(http.StatusOK))
@@ -106,8 +106,8 @@ var _ = Describe("GrafanaOncall", func() {
 			It("should call notify", func() {
 				Expect(mock.notifyCalled).Should(Equal(true))
 			})
-			It("should go to appdrift", func() {
-				Expect(mock.message.Receiver).Should(Equal(smseagle.Appdrift))
+			It("should go to 456", func() {
+				Expect(mock.message.PhoneNumber).Should(Equal("456"))
 			})
 			It("message should be correct", func() {
 				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
@@ -126,9 +126,9 @@ var _ = Describe("GrafanaOncall", func() {
 				grafana.HandleCall,
 			))
 		})
-		Context("Request for infrastrukturdrift is successful", func() {
+		Context("Request for 123 is successful", func() {
 			BeforeEach(func() {
-				req.Header.Set("team", "infrastrukturdrift")
+				req.Header.Set("phonenumber", "123")
 				res, err := client.Do(req)
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(res.StatusCode).Should(Equal(http.StatusOK))
@@ -136,8 +136,8 @@ var _ = Describe("GrafanaOncall", func() {
 			It("should call notify", func() {
 				Expect(mock.notifyCalled).Should(Equal(true))
 			})
-			It("should go to infrastrukturdrift", func() {
-				Expect(mock.message.Receiver).Should(Equal(smseagle.Infrastrukturdrift))
+			It("should go to 123", func() {
+				Expect(mock.message.PhoneNumber).Should(Equal("123"))
 			})
 			It("message should be correct", func() {
 				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
@@ -146,9 +146,9 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.Call))
 			})
 		})
-		Context("Request for appdrift is successful", func() {
+		Context("Request for 456 is successful", func() {
 			BeforeEach(func() {
-				req.Header.Set("team", "appdrift")
+				req.Header.Set("phonenumber", "456")
 				res, err := client.Do(req)
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(res.StatusCode).Should(Equal(http.StatusOK))
@@ -156,8 +156,8 @@ var _ = Describe("GrafanaOncall", func() {
 			It("should call notify", func() {
 				Expect(mock.notifyCalled).Should(Equal(true))
 			})
-			It("should go to appdrift", func() {
-				Expect(mock.message.Receiver).Should(Equal(smseagle.Appdrift))
+			It("should go to 456", func() {
+				Expect(mock.message.PhoneNumber).Should(Equal("456"))
 			})
 			It("message should be correct", func() {
 				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
@@ -178,9 +178,9 @@ var _ = Describe("GrafanaOncall", func() {
 				grafana.HandleSMS,
 			))
 		})
-		Context("Request for infrastrukturdrift is successful", func() {
+		Context("Request for 123 is successful", func() {
 			BeforeEach(func() {
-				req.Header.Set("team", "infrastrukturdrift")
+				req.Header.Set("phonenumber", "123")
 				res, err := client.Do(req)
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(res.StatusCode).Should(Equal(http.StatusOK))
@@ -188,8 +188,8 @@ var _ = Describe("GrafanaOncall", func() {
 			It("should call notify", func() {
 				Expect(mock.notifyCalled).Should(Equal(true))
 			})
-			It("should go to infrastrukturdrift", func() {
-				Expect(mock.message.Receiver).Should(Equal(smseagle.Infrastrukturdrift))
+			It("should go to 123", func() {
+				Expect(mock.message.PhoneNumber).Should(Equal("123"))
 			})
 			It("message should be correct", func() {
 				Expect(mock.message.Message).Should(Equal("Alarm løst \nId: IAXB4WC5DVD9R \nLøst: 2023-10-24 11:9:11 \nTittel: [firing:3] InstanceDown  \nAntall: 1 \nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/IAXB4WC5DVD9R"))

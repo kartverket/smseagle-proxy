@@ -9,12 +9,10 @@ import (
 )
 
 type ProxyConfig struct {
-	AppdriftPhoneNumber string         `mapstructure:"app-drift-phone-number"`
-	InfraPhoneNumber    string         `mapstructure:"infra-drift-phone-number"`
-	Call                SMSEagleConfig `mapstructure:"call"`
-	SMS                 SMSEagleConfig `mapstructure:"sms"`
-	Debug               bool           `mapstructure:"debug"`
-	BasicAuth           BasicAuth      `mapstructure:"basic-auth"`
+	Call      SMSEagleConfig `mapstructure:"call"`
+	SMS       SMSEagleConfig `mapstructure:"sms"`
+	Debug     bool           `mapstructure:"debug"`
+	BasicAuth BasicAuth      `mapstructure:"basic-auth"`
 }
 
 type BasicAuth struct {

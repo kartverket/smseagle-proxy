@@ -9,9 +9,7 @@ call:
   url: 
 sms:
   access-token: 
-  url: 
-app-drift-phone-number: 
-infra-drift-phone-number: 
+  url:  
 debug: true
 
 ```
@@ -21,8 +19,6 @@ SP_CALL_ACCESS_TOKEN=
 SP_CALL_URL=
 SP_SMS_ACCESS_TOKEN=
 SP_SMS_URL=
-APP_DRIFT_PHONE_NUMBER=
-INFRA_DRIFT_PHONE_NUMBER=
 DEBUG=TRUE
 ```
 
