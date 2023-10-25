@@ -55,6 +55,7 @@ func main() {
 	http.HandleFunc("/webhook/sms", basicAuth(oncall.HandleSMS, cfg))
 	http.HandleFunc("/webhook/call", basicAuth(oncall.HandleCall, cfg))
 	http.Handle("/metrics", promhttp.Handler())
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {})
 	err := http.ListenAndServe(port, nil)
 
 	if errors.Is(err, http.ErrServerClosed) {
