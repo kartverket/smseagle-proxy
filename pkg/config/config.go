@@ -14,6 +14,13 @@ type ProxyConfig struct {
 	Call                SMSEagleConfig `mapstructure:"call"`
 	SMS                 SMSEagleConfig `mapstructure:"sms"`
 	Debug               bool           `mapstructure:"debug"`
+	BasicAuth           BasicAuth      `mapstructure:"basic-auth"`
+}
+
+type BasicAuth struct {
+	Enabled  bool   `mapstructure:"enabled"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
 }
 
 type SMSEagleConfig struct {

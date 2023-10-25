@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/subtle"
 	"errors"
+	"io"
 	"kartverket.no/smseagle-proxy/pkg/alerter"
 	"kartverket.no/smseagle-proxy/pkg/config"
 	"kartverket.no/smseagle-proxy/pkg/smseagle"
@@ -22,6 +24,21 @@ func init() {
 	slog.SetDefault(logger)
 }
 
+func basicAuth(handler http.HandlerFunc, cfg *config.ProxyConfig) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user, pass, ok := r.BasicAuth()
+		badCreds := !ok || subtle.ConstantTimeCompare([]byte(user),
+			[]byte(cfg.BasicAuth.Username)) != 1 ||
+			subtle.ConstantTimeCompare([]byte(user), []byte(pass)) != 1
+		if badCreds && cfg.BasicAuth.Enabled {
+			w.WriteHeader(http.StatusUnauthorized)
+			io.WriteString(w, "Wrong username or password")
+			return
+		}
+		handler(w, r)
+	}
+}
+
 func main() {
 	port := ":8095"
 	slog.Info("Starting smseagle-proxy", "port", port)
@@ -34,8 +51,8 @@ func main() {
 	smseagle := smseagle.NewSMSEagle(cfg)
 	oncall := alerter.NewGrafanaOncall(smseagle, cfg)
 
-	http.HandleFunc("/webhook/sms", oncall.HandleSMS)
-	http.HandleFunc("/webhook/call", oncall.HandleCall)
+	http.HandleFunc("/webhook/sms", basicAuth(oncall.HandleSMS, cfg))
+	http.HandleFunc("/webhook/call", basicAuth(oncall.HandleCall, cfg))
 
 	err := http.ListenAndServe(port, nil)
 
