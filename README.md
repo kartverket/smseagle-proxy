@@ -11,7 +11,11 @@ sms:
   access-token: 
   url:  
 debug: true
-
+port: 8095//default
+basic-auth:
+  enabled: bool
+  username:
+  password:
 ```
 ### env variables
 ```
@@ -19,6 +23,10 @@ SP_CALL_ACCESS_TOKEN=
 SP_CALL_URL=
 SP_SMS_ACCESS_TOKEN=
 SP_SMS_URL=
+SP_PORT=
+SP_BASIC_AUTH_ENABLED=
+SP_BASIC_AUTH_USERNAME=
+SP_BASIC_AUTH_PASSWORD=
 DEBUG=TRUE
 ```
 
@@ -38,3 +46,6 @@ DEBUG=TRUE
     c. add smseagle-proxy as an outgoing webhook
 4. to rebuild smseagle-proxy and get logs run "docker compose up --build skyline"
 ```
+
+### sending requests
+other than an oncall json we need also a header with the `phonenumber` key.
