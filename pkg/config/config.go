@@ -9,6 +9,7 @@ import (
 )
 
 type ProxyConfig struct {
+	Port      string         `mapstructure:"port"`
 	Call      SMSEagleConfig `mapstructure:"call"`
 	SMS       SMSEagleConfig `mapstructure:"sms"`
 	Debug     bool           `mapstructure:"debug"`
@@ -33,6 +34,7 @@ func Read() *ProxyConfig {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(cfgDir)
 	viper.AddConfigPath(".")
+	viper.SetDefault("port", "8095")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 	viper.SetEnvPrefix("SP")
 	viper.AutomaticEnv()
@@ -56,6 +58,6 @@ func Read() *ProxyConfig {
 		slog.Error("missing config", "error", err)
 		os.Exit(1)
 	}
-
+	cfg.Port = ":" + cfg.Port
 	return &cfg
 }
