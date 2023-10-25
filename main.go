@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/subtle"
 	"errors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io"
 	"kartverket.no/smseagle-proxy/pkg/alerter"
 	"kartverket.no/smseagle-proxy/pkg/config"
@@ -53,7 +54,7 @@ func main() {
 
 	http.HandleFunc("/webhook/sms", basicAuth(oncall.HandleSMS, cfg))
 	http.HandleFunc("/webhook/call", basicAuth(oncall.HandleCall, cfg))
-
+	http.Handle("/metrics", promhttp.Handler())
 	err := http.ListenAndServe(port, nil)
 
 	if errors.Is(err, http.ErrServerClosed) {

@@ -43,6 +43,7 @@ func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 	client := &http.Client{Transport: &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}}
+	smsEagleRequestsCounter.Inc()
 
 	if message.ContactType == SMS {
 		msg := strings.ReplaceAll(message.Message, " ", "+")
@@ -50,12 +51,14 @@ func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 		err := sendSMS(s.cfg, message.PhoneNumber, msg, client)
 		if err != nil {
 			slog.Error("Error sending sms", "error", err)
+			failedSMSEagleRequestsCounter.Inc()
 			return err
 		}
 	} else if message.ContactType == Call {
 		err := call(s.cfg, message.PhoneNumber, client)
 		if err != nil {
 			slog.Error("Error sending call request", "error", err)
+			failedSMSEagleRequestsCounter.Inc()
 			return err
 		}
 	} else {

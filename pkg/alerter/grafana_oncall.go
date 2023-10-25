@@ -76,9 +76,11 @@ func (g *GrafanaOncall) HandleSMS(w http.ResponseWriter, r *http.Request) {
 }
 
 func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c ContactType) {
+	oncallRequestsCounter.Inc()
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		io.WriteString(w, "Method not allowed")
+		failedOncallRequestsCounter.Inc()
 		return
 	}
 
@@ -87,19 +89,21 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 		slog.Error("decoding webhook failed", "error", err)
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, "Invalid request body")
+		failedOncallRequestsCounter.Inc()
 		return
 	}
 
-	phonenumber := r.Header.Get("phonenumber")
-	slog.Debug("Checking header for phonenumber", "phonenumber", phonenumber)
-	if phonenumber == "" {
+	phoneNumber := r.Header.Get("phonenumber")
+	slog.Debug("Checking header for phonenumber", "phonenumber", phoneNumber)
+	if phoneNumber == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, "Missing or invalid phonenumber header")
+		failedOncallRequestsCounter.Inc()
 		return
 	}
 
 	message := SMSEagleMessage{
-		PhoneNumber: phonenumber,
+		PhoneNumber: phoneNumber,
 		Message:     createMessage(webhook),
 		ContactType: c,
 	}
