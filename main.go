@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/subtle"
 	"errors"
+	"fmt"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io"
 	"kartverket.no/smseagle-proxy/pkg/alerter"
@@ -42,7 +43,11 @@ func init() {
 
 func basicAuth(handler http.HandlerFunc, cfg *config.ProxyConfig) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(r.Header.Get("Authorization"))
 		user, pass, ok := r.BasicAuth()
+		fmt.Println(user)
+		fmt.Println(pass)
+		fmt.Println(ok)
 		badCreds := !ok || subtle.ConstantTimeCompare([]byte(user),
 			[]byte(cfg.BasicAuth.Username)) != 1 ||
 			subtle.ConstantTimeCompare([]byte(pass), []byte(cfg.BasicAuth.Password)) != 1

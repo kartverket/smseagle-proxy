@@ -63,7 +63,7 @@ func parseOncallWebhook(r *http.Request) (*OncallWebhook, error) {
 	if err != nil {
 		return nil, err
 	}
-	slog.Debug("Parsed %w", "webhook", &webhook)
+	slog.Debug("Parsed", "webhook", &webhook)
 	return &webhook, nil
 }
 
