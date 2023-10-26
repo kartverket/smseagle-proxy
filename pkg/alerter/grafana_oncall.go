@@ -2,6 +2,7 @@ package alerter
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"kartverket.no/smseagle-proxy/pkg/config"
@@ -57,7 +58,6 @@ func NewGrafanaOncall(notifier Notifier, cfg *config.ProxyConfig) *GrafanaOncall
 }
 
 func parseOncallWebhook(r *http.Request) (*OncallWebhook, error) {
-	slog.Debug("Parsing", "request", r)
 	var webhook OncallWebhook
 	err := json.NewDecoder(r.Body).Decode(&webhook)
 	if err != nil {
@@ -101,10 +101,18 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 		failedOncallRequestsCounter.Inc()
 		return
 	}
+	msg, err := createMessage(webhook)
+	if err != nil {
+		slog.Warn("invalid event type")
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, "invalid event type")
+		failedOncallRequestsCounter.Inc()
+		return
+	}
 
 	message := SMSEagleMessage{
 		PhoneNumber: phoneNumber,
-		Message:     createMessage(webhook),
+		Message:     msg,
 		ContactType: c,
 	}
 
@@ -114,16 +122,16 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 	}
 }
 
-func createMessage(webhook *OncallWebhook) string {
+func createMessage(webhook *OncallWebhook) (string, error) {
 	if webhook.Event.Type == Escalation {
 		return fmt.Sprintf("Ny Alarm \nId: %s \nOpprettet: %s \nTittel: %s \nAntall: %d\nLenke: %s",
 			webhook.AlertGroup.Id, webhook.AlertGroup.Created.Format("2006-1-2 15:4:3"), webhook.AlertGroup.Title,
-			webhook.AlertGroup.AlertsCount, webhook.AlertGroup.Permalinks.Web)
+			webhook.AlertGroup.AlertsCount, webhook.AlertGroup.Permalinks.Web), nil
 	} else if webhook.Event.Type == Resolve {
 		return fmt.Sprintf("Alarm løst \nId: %s \nLøst: %s \nTittel: %s \nAntall: %d \nLenke: %s",
 			webhook.AlertGroup.Id, webhook.AlertGroup.Resolved.Format("2006-1-2 15:4:3"), webhook.AlertGroup.Title,
-			webhook.AlertGroup.AlertsCount, webhook.AlertGroup.Permalinks.Web)
+			webhook.AlertGroup.AlertsCount, webhook.AlertGroup.Permalinks.Web), nil
 	} else {
-		return ""
+		return "", errors.New("invalid event type")
 	}
 }
