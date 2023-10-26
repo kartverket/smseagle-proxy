@@ -9,17 +9,10 @@ import (
 )
 
 type ProxyConfig struct {
-	Port      string         `mapstructure:"port"`
-	Call      SMSEagleConfig `mapstructure:"call"`
-	SMS       SMSEagleConfig `mapstructure:"sms"`
-	Debug     bool           `mapstructure:"debug"`
-	BasicAuth BasicAuth      `mapstructure:"basic-auth"`
-}
-
-type BasicAuth struct {
-	Enabled  bool   `mapstructure:"enabled"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
+	Port  string         `mapstructure:"port"`
+	Call  SMSEagleConfig `mapstructure:"call"`
+	SMS   SMSEagleConfig `mapstructure:"sms"`
+	Debug bool           `mapstructure:"debug"`
 }
 
 type SMSEagleConfig struct {

@@ -12,10 +12,6 @@ sms:
   url:  
 debug: true
 port: 8095//default
-basic-auth:
-  enabled: bool
-  username:
-  password:
 ```
 ### env variables
 ```
@@ -24,9 +20,6 @@ SP_CALL_URL=
 SP_SMS_ACCESS_TOKEN=
 SP_SMS_URL=
 SP_PORT=
-SP_BASIC_AUTH_ENABLED=
-SP_BASIC_AUTH_USERNAME=
-SP_BASIC_AUTH_PASSWORD=
 DEBUG=TRUE
 ```
 

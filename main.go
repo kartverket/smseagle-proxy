@@ -2,11 +2,8 @@ package main
 
 import (
 	"context"
-	"crypto/subtle"
 	"errors"
-	"fmt"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"io"
 	"kartverket.no/smseagle-proxy/pkg/alerter"
 	"kartverket.no/smseagle-proxy/pkg/config"
 	"kartverket.no/smseagle-proxy/pkg/smseagle"
@@ -41,33 +38,14 @@ func init() {
 	}
 }
 
-func basicAuth(handler http.HandlerFunc, cfg *config.ProxyConfig) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.Header.Get("Authorization"))
-		user, pass, ok := r.BasicAuth()
-		fmt.Println(user)
-		fmt.Println(pass)
-		fmt.Println(ok)
-		badCreds := !ok || subtle.ConstantTimeCompare([]byte(user),
-			[]byte(cfg.BasicAuth.Username)) != 1 ||
-			subtle.ConstantTimeCompare([]byte(pass), []byte(cfg.BasicAuth.Password)) != 1
-		if badCreds && cfg.BasicAuth.Enabled {
-			w.WriteHeader(http.StatusUnauthorized)
-			io.WriteString(w, "Wrong username or password")
-			return
-		}
-		handler(w, r)
-	}
-}
-
 func main() {
 	smseagle := smseagle.NewSMSEagle(cfg)
 	oncall := alerter.NewGrafanaOncall(smseagle, cfg)
 
 	sm := http.NewServeMux()
 
-	sm.HandleFunc("/webhook/sms", basicAuth(oncall.HandleSMS, cfg))
-	sm.HandleFunc("/webhook/call", basicAuth(oncall.HandleCall, cfg))
+	sm.HandleFunc("/webhook/sms", oncall.HandleSMS)
+	sm.HandleFunc("/webhook/call", oncall.HandleCall)
 	sm.Handle("/metrics", promhttp.Handler())
 	sm.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {})
 
