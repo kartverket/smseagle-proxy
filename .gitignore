@@ -19,3 +19,9 @@
 
 # Go workspace file
 go.work
+
+.idea
+config.yaml
+smseagle-proxy
+dist
+local_testing/.env.smseagle-proxy

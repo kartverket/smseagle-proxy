@@ -1,0 +1,113 @@
+{
+  "event": {
+    "type": "escalation"
+  },
+  "user": null,
+  "alert_group": {
+    "id": "I57917WDFNGHY",
+    "integration_id": "CCREJRZ2PG8MN",
+    "route_id": "RIGG76EX2XWKB",
+    "alerts_count": 1,
+    "state": "firing",
+    "created_at": "2023-10-12T12:17:13.188974Z",
+    "resolved_at": null,
+    "acknowledged_at": null,
+    "title": "[firing:3] InstanceDown ",
+    "permalinks": {
+      "slack": null,
+      "telegram": null,
+      "web": "http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"
+    }
+  },
+  "alert_group_id": "I57917WDFNGHY",
+  "alert_payload": {
+    "alerts": [
+      {
+        "endsAt": "0001-01-01T00:00:00Z",
+        "labels": {
+          "job": "node",
+          "group": "production",
+          "instance": "localhost:8081",
+          "severity": "critical",
+          "alertname": "InstanceDown"
+        },
+        "status": "firing",
+        "startsAt": "2023-06-12T08:24:38.326Z",
+        "annotations": {
+          "title": "Instance localhost:8081 down",
+          "description": "localhost:8081 of job node has been down for more than 1 minute."
+        },
+        "fingerprint": "f404ecabc8dd5cd7",
+        "generatorURL": ""
+      },
+      {
+        "endsAt": "0001-01-01T00:00:00Z",
+        "labels": {
+          "job": "node",
+          "group": "canary",
+          "instance": "localhost:8082",
+          "severity": "critical",
+          "alertname": "InstanceDown"
+        },
+        "status": "firing",
+        "startsAt": "2023-06-12T08:24:38.326Z",
+        "annotations": {
+          "title": "Instance localhost:8082 down",
+          "description": "localhost:8082 of job node has been down for more than 1 minute."
+        },
+        "fingerprint": "f8f08d4e32c61a9d",
+        "generatorURL": ""
+      },
+      {
+        "endsAt": "0001-01-01T00:00:00Z",
+        "labels": {
+          "job": "node",
+          "group": "production",
+          "instance": "localhost:8083",
+          "severity": "critical",
+          "alertname": "InstanceDown"
+        },
+        "status": "firing",
+        "startsAt": "2023-06-12T08:24:38.326Z",
+        "annotations": {
+          "title": "Instance localhost:8083 down",
+          "description": "localhost:8083 of job node has been down for more than 1 minute."
+        },
+        "fingerprint": "39f38c0611ee7abd",
+        "generatorURL": ""
+      }
+    ],
+    "status": "firing",
+    "version": "4",
+    "groupKey": "{}:{alertname=\"InstanceDown\"}",
+    "receiver": "combo",
+    "numFiring": 3,
+    "externalURL": "",
+    "groupLabels": {
+      "alertname": "InstanceDown"
+    },
+    "numResolved": 0,
+    "commonLabels": {
+      "job": "node",
+      "severity": "critical",
+      "alertname": "InstanceDown"
+    },
+    "truncatedAlerts": 0,
+    "commonAnnotations": {},
+    "title": "Instance localhost:8082 down"
+  },
+  "integration": {
+    "id": "CCREJRZ2PG8MN",
+    "type": "grafana_alerting",
+    "name": "Appdrift grafana - Grafana Alerting",
+    "team": "Appdrift"
+  },
+  "notified_users": [],
+  "users_to_be_notified": [
+    {
+      "id": "UUQZLPGCSMQFZ",
+      "username": "admin",
+      "email": "admin@localhost"
+    }
+  ]
+}
