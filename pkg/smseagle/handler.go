@@ -20,15 +20,6 @@ const (
 )
 
 type ContactType int64
-
-const (
-	Invalid Receiver = iota
-	Appdrift
-	Infrastrukturdrift
-)
-
-type Receiver int64
-
 type SMSEagle struct {
 	cfg *config.ProxyConfig
 }
