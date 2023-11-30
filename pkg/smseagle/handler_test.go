@@ -37,8 +37,8 @@ var _ = Describe("Handler", func() {
 
 	Context("appdrift alert", func() {
 		It("should make get requests with correct queries to sms and call", func() {
-			msg := SMSEagleMessage{Message: "hei pa deg", PhoneNumber: "123"}
-			exptectedSMSMsg := "hei+pa+deg"
+			msg := SMSEagleMessage{Message: "hei pa deg, urltest: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes", PhoneNumber: "123"}
+			exptectedSMSMsg := "hei+pa+deg,+urltest:+https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook%2Bfor%2BSKIP-alarmer%23HostOutOfInodes"
 			expectedSMSQuery := fmt.Sprintf("access_token=%s&to=%s&message=%s&unicode=1", cfg.SMS.AccessToken, "123", exptectedSMSMsg)
 			expectedCallQuery := fmt.Sprintf("access_token=%s&to=%s", cfg.Call.AccessToken, "123")
 			server.AppendHandlers(
