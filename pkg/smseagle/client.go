@@ -8,7 +8,7 @@ import (
 )
 
 func sendSMS(cfg *config.ProxyConfig, phoneNumber string, message string, client *http.Client) error {
-	requestUrl := fmt.Sprintf("%s/http_api/send_sms?access_token=%s&to=%s&message=%s", cfg.SMS.Url, cfg.SMS.AccessToken, phoneNumber, message)
+	requestUrl := fmt.Sprintf("%s/http_api/send_sms?access_token=%s&to=%s&message=%s&unicode=1", cfg.SMS.Url, cfg.SMS.AccessToken, phoneNumber, message)
 	slog.Debug("Sending sms", "url", requestUrl)
 	res, err := client.Get(requestUrl)
 	if err != nil {

@@ -98,7 +98,9 @@
       "alertname": "InstanceDown"
     },
     "truncatedAlerts": 0,
-    "commonAnnotations": {}
+    "commonAnnotations": {
+      "runbook_url": "https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"
+    }
   },
   "integration": {
     "id": "CUHVC65TCDY7K",

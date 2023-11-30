@@ -90,7 +90,7 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.PhoneNumber).Should(Equal("123"))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
+				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY\nPlaybook: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"))
 			})
 			It("should have sms contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
@@ -110,7 +110,7 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.PhoneNumber).Should(Equal("456"))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
+				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY\nPlaybook: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"))
 			})
 			It("should have sms contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
@@ -140,7 +140,7 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.PhoneNumber).Should(Equal("123"))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
+				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY\nPlaybook: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"))
 			})
 			It("should have call contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.Call))
@@ -160,7 +160,7 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.PhoneNumber).Should(Equal("456"))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"))
+				Expect(mock.message.Message).Should(Equal("Ny Alarm \nId: I57917WDFNGHY \nOpprettet: 2023-10-12 12:17:12 \nTittel: [firing:3] InstanceDown  \nAntall: 1\nLenke: http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY\nPlaybook: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"))
 			})
 			It("should have call contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.Call))

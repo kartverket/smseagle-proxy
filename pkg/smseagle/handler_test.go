@@ -39,7 +39,7 @@ var _ = Describe("Handler", func() {
 		It("should make get requests with correct queries to sms and call", func() {
 			msg := SMSEagleMessage{Message: "hei pa deg", PhoneNumber: "123"}
 			exptectedSMSMsg := "hei+pa+deg"
-			expectedSMSQuery := fmt.Sprintf("access_token=%s&to=%s&message=%s", cfg.SMS.AccessToken, "123", exptectedSMSMsg)
+			expectedSMSQuery := fmt.Sprintf("access_token=%s&to=%s&message=%s&unicode=1", cfg.SMS.AccessToken, "123", exptectedSMSMsg)
 			expectedCallQuery := fmt.Sprintf("access_token=%s&to=%s", cfg.Call.AccessToken, "123")
 			server.AppendHandlers(
 				ghttp.CombineHandlers(
