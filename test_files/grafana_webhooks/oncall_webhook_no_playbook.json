@@ -1,30 +1,25 @@
 {
   "event": {
-    "type": "resolve",
-    "time": "2023-10-24T11:09:17.732249+00:00"
+    "type": "escalation"
   },
-  "user": {
-    "id": "UJP5J5YMMAQTJ",
-    "username": "admin",
-    "email": "admin@localhost"
-  },
+  "user": null,
   "alert_group": {
-    "id": "IAXB4WC5DVD9R",
-    "integration_id": "CUHVC65TCDY7K",
-    "route_id": "RNFBNQU6HJR4W",
+    "id": "I57917WDFNGHY",
+    "integration_id": "CCREJRZ2PG8MN",
+    "route_id": "RIGG76EX2XWKB",
     "alerts_count": 1,
-    "state": "resolved",
-    "created_at": "2023-10-24T10:35:56.006676Z",
-    "resolved_at": "2023-10-24T11:09:17.732249Z",
+    "state": "firing",
+    "created_at": "2023-10-12T12:17:13.188974Z",
+    "resolved_at": null,
     "acknowledged_at": null,
     "title": "[firing:3] InstanceDown ",
     "permalinks": {
       "slack": null,
       "telegram": null,
-      "web": "http://grafana:3000/a/grafana-oncall-app/alert-groups/IAXB4WC5DVD9R"
+      "web": "http://grafana:3000/a/grafana-oncall-app/alert-groups/I57917WDFNGHY"
     }
   },
-  "alert_group_id": "IAXB4WC5DVD9R",
+  "alert_group_id": "I57917WDFNGHY",
   "alert_payload": {
     "alerts": [
       {
@@ -98,19 +93,21 @@
       "alertname": "InstanceDown"
     },
     "truncatedAlerts": 0,
-    "commonAnnotations": {
-      "runbook_url": "https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"
-    }
+    "commonAnnotations": {},
+    "title": "Instance localhost:8082 down"
   },
   "integration": {
-    "id": "CUHVC65TCDY7K",
+    "id": "CCREJRZ2PG8MN",
     "type": "grafana_alerting",
-    "name": "appdrift - Grafana Alerting",
-    "team": null
+    "name": "Appdrift grafana - Grafana Alerting",
+    "team": "Appdrift"
   },
   "notified_users": [],
-  "users_to_be_notified": [],
-  "responses": {
-    "WHT187MTJRM71X": null
-  }
+  "users_to_be_notified": [
+    {
+      "id": "UUQZLPGCSMQFZ",
+      "username": "admin",
+      "email": "admin@localhost"
+    }
+  ]
 }

@@ -37,7 +37,9 @@ func (s *SMSEagle) Notify(message *SMSEagleMessage) error {
 	smsEagleRequestsCounter.Inc()
 
 	if message.ContactType == SMS {
-		msg := strings.ReplaceAll(message.Message, " ", "+")
+		msg := strings.ReplaceAll(message.Message, "+", "%2B")
+		msg = strings.ReplaceAll(msg, "#", "%23")
+		msg = strings.ReplaceAll(msg, " ", "+")
 		msg = strings.ReplaceAll(msg, "\n", "%0A")
 		err := sendSMS(s.cfg, message.PhoneNumber, msg, client)
 		if err != nil {
