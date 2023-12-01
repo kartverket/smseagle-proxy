@@ -133,9 +133,16 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 
 func createMessage(webhook *OncallWebhook) (string, error) {
 	if webhook.Event.Type == Escalation {
-		return fmt.Sprintf("Ny Alarm \nId: %s \nOpprettet: %s \nTittel: %s \nAntall: %d\nLenke: %s\nPlaybook: %s",
+		msg := fmt.Sprintf("Ny Alarm \nId: %s \nOpprettet: %s \nTittel: %s \nAntall: %d\nLenke: %s",
 			webhook.AlertGroup.Id, webhook.AlertGroup.Created.Format("2006-1-2 15:4:3"), webhook.AlertGroup.Title,
-			webhook.AlertGroup.AlertsCount, webhook.AlertGroup.Permalinks.Web, webhook.AlertPayload.CommonAnnotations.RunbookUrl), nil
+			webhook.AlertGroup.AlertsCount, webhook.AlertGroup.Permalinks.Web)
+
+		if webhook.AlertPayload.CommonAnnotations.RunbookUrl != "" {
+			msg = msg + "\nPlaybook: " + webhook.AlertPayload.CommonAnnotations.RunbookUrl
+		}
+
+		return msg, nil
+
 	} else if webhook.Event.Type == Resolve {
 		return fmt.Sprintf("Alarm løst \nId: %s \nLøst: %s \nTittel: %s \nAntall: %d \nLenke: %s",
 			webhook.AlertGroup.Id, webhook.AlertGroup.Resolved.Format("2006-1-2 15:4:3"), webhook.AlertGroup.Title,
