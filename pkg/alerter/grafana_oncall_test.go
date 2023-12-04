@@ -240,10 +240,39 @@ var _ = Describe("GrafanaOncall", func() {
 				Expect(mock.message.PhoneNumber).Should(Equal("123"))
 			})
 			It("message should be correct", func() {
-				Expect(mock.message.Message).Should(Equal("%f0%9f%9a%a8Ny alarm!%f0%9f%9a%91\nId: I57917WDFNGHY\nOpprettet: 2023-10-12T12:17:13.188974Z\nPlaybook: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"))
+				Expect(mock.message.Message).Should(Equal("%f0%9f%9a%a8New Alert!%f0%9f%9a%91\nTitle: [firing:3] InstanceDown\nID: I1TRVMRRPT31L\nCreated: 2023-12-04T12:54:36.741831Z\nPlaybook: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"))
 			})
 			It("should have sms contact type", func() {
 				Expect(mock.message.ContactType).Should(Equal(smseagle.SMS))
+			})
+		})
+	})
+	Describe("Escalation empty call request", func() {
+		BeforeEach(func() {
+			rawWebhook, err = os.ReadFile("../../test_files/grafana_webhooks/oncall_webhook_only_event_type.json")
+			Expect(err).ShouldNot(HaveOccurred())
+			req, err = http.NewRequest(http.MethodPost, server.URL()+"/webhook/call", bytes.NewReader(rawWebhook))
+			Expect(err).ShouldNot(HaveOccurred())
+			server.RouteToHandler(http.MethodPost, "/webhook/call", ghttp.CombineHandlers(
+				ghttp.VerifyRequest(http.MethodPost, "/webhook/call"),
+				grafana.HandleCall,
+			))
+		})
+		Context("Request for 123 is successful", func() {
+			BeforeEach(func() {
+				req.Header.Set("phonenumber", "123")
+				res, err := client.Do(req)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(res.StatusCode).Should(Equal(http.StatusOK))
+			})
+			It("should call notify", func() {
+				Expect(mock.notifyCalled).Should(Equal(true))
+			})
+			It("should go to 123", func() {
+				Expect(mock.message.PhoneNumber).Should(Equal("123"))
+			})
+			It("should have call contact type", func() {
+				Expect(mock.message.ContactType).Should(Equal(smseagle.Call))
 			})
 		})
 	})
