@@ -1,0 +1,11 @@
+{
+  "event": {
+    "type": "escalation"
+  },
+  "message_lines": [
+    "%f0%9f%9a%a8Ny alarm!%f0%9f%9a%91",
+    "Id: I57917WDFNGHY",
+    "Opprettet: 2023-10-12T12:17:13.188974Z",
+    "Playbook: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"
+  ]
+}
