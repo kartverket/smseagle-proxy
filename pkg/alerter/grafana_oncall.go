@@ -9,6 +9,7 @@ import (
 	. "kartverket.no/smseagle-proxy/pkg/smseagle"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -24,6 +25,7 @@ type OncallWebhook struct {
 	AlertGroup   AlertGroup   `json:"alert_group"`
 	Event        Event        `json:"event"`
 	AlertPayload AlertPayload `json:"alert_payload"`
+	MessageLines []string     `json:"message_lines"`
 }
 
 type Event struct {
@@ -110,13 +112,19 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 		failedOncallRequestsCounter.Inc()
 		return
 	}
-	msg, err := createMessage(webhook)
-	if err != nil {
-		slog.Warn("invalid event type")
-		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "invalid event type")
-		failedOncallRequestsCounter.Inc()
-		return
+
+	var msg string
+	if webhook.MessageLines != nil {
+		msg = strings.Join(webhook.MessageLines, "\n")
+	} else {
+		msg, err = createMessage(webhook)
+		if err != nil {
+			slog.Warn("invalid event type")
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w, "invalid event type")
+			failedOncallRequestsCounter.Inc()
+			return
+		}
 	}
 
 	message := SMSEagleMessage{
