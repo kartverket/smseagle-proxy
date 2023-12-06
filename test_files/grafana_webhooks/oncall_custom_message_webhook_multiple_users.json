@@ -12,6 +12,9 @@
   "users_to_be_notified": [
     {
       "username": "SomekartverkUser@kartverket.no"
+    },
+    {
+      "username": "SomekartverkUser2@kartverket.no"
     }
   ]
 }

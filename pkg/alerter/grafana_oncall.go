@@ -22,10 +22,15 @@ type Annotation struct {
 }
 
 type OncallWebhook struct {
-	AlertGroup   AlertGroup   `json:"alert_group"`
-	Event        Event        `json:"event"`
-	AlertPayload AlertPayload `json:"alert_payload"`
-	MessageLines []string     `json:"message_lines"`
+	AlertGroup    AlertGroup        `json:"alert_group"`
+	Event         Event             `json:"event"`
+	AlertPayload  AlertPayload      `json:"alert_payload"`
+	MessageLines  []string          `json:"message_lines"`
+	UsersToNotify []UserInformation `json:"users_to_be_notified"`
+}
+
+type UserInformation struct {
+	Username string `json:"username"`
 }
 
 type Event struct {
@@ -104,11 +109,11 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 		return
 	}
 
-	phoneNumber := r.Header.Get("phonenumber")
-	slog.Debug("Checking header for phonenumber", "phonenumber", phoneNumber)
-	if phoneNumber == "" {
+	slog.Debug("Checking for phonenumber")
+	phoneNumbers := getPhoneNumber(webhook, g.cfg.Users)
+	if len(phoneNumbers) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "Missing or invalid phonenumber header")
+		io.WriteString(w, "Missing or invalid users")
 		failedOncallRequestsCounter.Inc()
 		return
 	}
@@ -127,15 +132,17 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 		}
 	}
 
-	message := SMSEagleMessage{
-		PhoneNumber: phoneNumber,
-		Message:     msg,
-		ContactType: c,
-	}
-
-	err = g.notifier.Notify(&message)
-	if err != nil {
-		slog.Error("Failure to notify", "error", err)
+	for _, phoneNumber := range phoneNumbers {
+		message := SMSEagleMessage{
+			PhoneNumber: phoneNumber,
+			Message:     msg,
+			ContactType: c,
+		}
+		err = g.notifier.Notify(&message)
+		if err != nil {
+			failedOncallRequestsCounter.Inc()
+			slog.Error("Failure to notify", "error", err)
+		}
 	}
 }
 
@@ -158,4 +165,22 @@ func createMessage(webhook *OncallWebhook) (string, error) {
 	} else {
 		return "", errors.New("invalid event type")
 	}
+}
+
+func getPhoneNumber(webhook *OncallWebhook, users map[string]string) []string {
+	var phoneNumbers []string
+	usersLowerCase := make(map[string]string)
+
+	for k, v := range users {
+		usersLowerCase[strings.ToLower(k)] = v
+	}
+
+	for _, user := range webhook.UsersToNotify {
+		phoneNumber, ok := usersLowerCase[strings.ToLower(user.Username)]
+		if ok {
+			phoneNumbers = append(phoneNumbers, phoneNumber)
+		}
+	}
+
+	return phoneNumbers
 }

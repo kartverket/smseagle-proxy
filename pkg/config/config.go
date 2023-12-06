@@ -9,10 +9,11 @@ import (
 )
 
 type ProxyConfig struct {
-	Port  string         `mapstructure:"port"`
-	Call  SMSEagleConfig `mapstructure:"call"`
-	SMS   SMSEagleConfig `mapstructure:"sms"`
-	Debug bool           `mapstructure:"debug"`
+	Port  string            `mapstructure:"port"`
+	Call  SMSEagleConfig    `mapstructure:"call"`
+	SMS   SMSEagleConfig    `mapstructure:"sms"`
+	Debug bool              `mapstructure:"debug"`
+	Users map[string]string `mapstructure:"users"`
 }
 
 type SMSEagleConfig struct {

@@ -109,7 +109,13 @@
     "team": null
   },
   "notified_users": [],
-  "users_to_be_notified": [],
+  "users_to_be_notified": [
+    {
+      "id": "UUQZLPGCSMQFZ",
+      "username": "admin",
+      "email": "admin@localhost"
+    }
+  ],
   "responses": {
     "WHT187MTJRM71X": null
   }
