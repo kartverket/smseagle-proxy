@@ -9,9 +9,5 @@
     "Created: 2023-12-04T12:54:36.741831Z"
   ,"Playbook: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes"
   ],
-  "users_to_be_notified": [
-    {
-      "username": "SomekartverkUser@kartverket.no"
-    }
-  ]
+  "users_to_be_notified": []
 }
