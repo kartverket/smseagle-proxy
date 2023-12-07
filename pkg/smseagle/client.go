@@ -14,6 +14,9 @@ func sendSMS(cfg *config.ProxyConfig, phoneNumber string, message string, client
 	if err != nil {
 		return err
 	}
+	if res.StatusCode != 200 {
+		return fmt.Errorf("response code not 200. Request: %s/http_api/send_sms?access_token=%s&to=%s&message=%s&unicode=1", cfg.SMS.Url, "x", phoneNumber, message)
+	}
 	slog.Debug("sms request successful", "response code", res.StatusCode, "response text", res.Status)
 	return nil
 }
@@ -24,6 +27,9 @@ func call(cfg *config.ProxyConfig, phoneNumber string, client *http.Client) erro
 	res, err := client.Get(requestUrl)
 	if err != nil {
 		return err
+	}
+	if res.StatusCode != 200 {
+		return fmt.Errorf("response code not 200. Request: %s/http_api/call_with_termination?access_token=%s&to=%s&duration=30", cfg.Call.Url, "x", phoneNumber)
 	}
 	slog.Debug("Call request successful", "response code", res.StatusCode, "response text", res.Status)
 	return nil

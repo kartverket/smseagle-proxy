@@ -112,6 +112,7 @@ func (g *GrafanaOncall) handleRequest(w http.ResponseWriter, r *http.Request, c 
 	slog.Debug("Checking for phonenumber")
 	phoneNumbers := getPhoneNumber(webhook, g.cfg.Users)
 	if len(phoneNumbers) == 0 {
+		slog.Warn("No phonenumber found", "users", webhook.UsersToNotify, "users in config", g.cfg.Users)
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, "Missing or invalid users")
 		failedOncallRequestsCounter.Inc()

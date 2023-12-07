@@ -54,6 +54,24 @@ var _ = Describe("Handler", func() {
 			err := smseagle.Notify(&msg)
 			Expect(err).ShouldNot(HaveOccurred())
 		})
+		It("should throw error if response is not 200", func() {
+			msg := SMSEagleMessage{Message: "hei pa deg, urltest: https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook+for+SKIP-alarmer#HostOutOfInodes", PhoneNumber: "123"}
+			exptectedSMSMsg := "hei+pa+deg,+urltest:+https://kartverket.atlassian.net/wiki/spaces/SKIP/pages/713359536/Playbook%2Bfor%2BSKIP-alarmer%23HostOutOfInodes"
+			expectedSMSQuery := fmt.Sprintf("access_token=%s&to=%s&message=%s&unicode=1", cfg.SMS.AccessToken, "123", exptectedSMSMsg)
+			expectedCallQuery := fmt.Sprintf("access_token=%s&to=%s", cfg.Call.AccessToken, "123")
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/http_api/send_sms", expectedSMSQuery),
+					ghttp.RespondWith(http.StatusBadRequest, "Bad"),
+				),
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/http_api/call_with_termination", expectedCallQuery),
+					ghttp.RespondWith(http.StatusBadRequest, "Bad"),
+				),
+			)
+			err := smseagle.Notify(&msg)
+			Expect(err).Should(HaveOccurred())
+		})
 	})
 
 })
