@@ -4,7 +4,7 @@ go 1.21.0
 
 require (
 	github.com/go-playground/validator/v10 v10.16.0
-	github.com/onsi/ginkgo/v2 v2.13.1
+	github.com/onsi/ginkgo/v2 v2.13.2
 	github.com/onsi/gomega v1.30.0
 	github.com/prometheus/client_golang v1.18.0
 	github.com/spf13/viper v1.17.0
