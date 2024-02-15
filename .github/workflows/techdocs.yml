@@ -20,5 +20,5 @@ jobs:
           entity_name: smseagle-proxy
           gcs_bucket_name: techdocsxjnci8m15r
           workload_identity_provider: projects/833464919209/locations/global/workloadIdentityPools/backstage-techdocs-pool/providers/github-provider
-          service_account: techdocs-writer@utviklerportal-sandbox-5af9.iam.gserviceaccount.com
+          service_account: techdocs-writer@utviklerportal-sandbox-5af9.iam.gserviceaccount.com 
           project_id: ${{vars.BACKSTAGE_TECHDOCS_PROJECT_ID}}
