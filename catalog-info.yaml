@@ -2,11 +2,10 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: smseagle-proxy
-  description: Integrates Grafana Oncall with SMSEagle
+  description: ewdsa
   annotations:
-    backstage.io/techdocs-ref: dir:.
+    backstage.io/linguist: 
 spec:
   type: service
   lifecycle: production
-  owner: SKIP
-  system: SKIP
+  owner: group:default/skip
