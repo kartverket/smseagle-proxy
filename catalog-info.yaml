@@ -1,12 +1,37 @@
-apiVersion: backstage.io/v1alpha1
-kind: Component
+# nonk8s
+apiVersion: "backstage.io/v1alpha1"
+kind: "Component"
 metadata:
-  name: smseagle-proxy
-  description: Integrates Grafana Oncall with SMSEagle
-  annotations:
-    backstage.io/techdocs-ref: dir:.
+  name: "smseagle-proxy"
+  tags:
+  - "internal"
 spec:
-  type: service
-  lifecycle: production
-  owner: SKIP
-  system: SKIP
+  type: "service"
+  lifecycle: "production"
+  owner: "skip"
+---
+apiVersion: "backstage.io/v1alpha1"
+kind: "Group"
+metadata:
+  name: "security_champion_smseagle-proxy"
+  title: "Security Champion smseagle-proxy"
+spec:
+  type: "security_champion"
+  parent: "it_security_champions"
+  members:
+  - "omaen"
+  children:
+  - "resource:smseagle-proxy"
+---
+apiVersion: "backstage.io/v1alpha1"
+kind: "Resource"
+metadata:
+  name: "smseagle-proxy"
+  links:
+  - url: "https://github.com/kartverket/smseagle-proxy"
+    title: "smseagle-proxy på GitHub"
+spec:
+  type: "repo"
+  owner: "security_champion_smseagle-proxy"
+  dependencyOf:
+  - "component:smseagle-proxy"
