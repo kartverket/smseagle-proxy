@@ -6,7 +6,7 @@ description: Introduction to smseagle-proxy
 
 # Kartverket.dev
 
-Some example text here
+Some example text here 
 
 You can read more about tech docs [here](https://backstage.io/docs/features/techdocs/).
 
