@@ -1,6 +1,6 @@
 module kartverket.no/smseagle-proxy
 
-go 1.21.0
+go 1.23.2
 
 require (
 	github.com/go-playground/validator/v10 v10.22.0
