@@ -1,0 +1,10 @@
+name: Dependabot auto-merge
+on: pull_request_target
+
+jobs:
+  auto-merge-dependabot:
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+    uses: kartverket/github-workflows/.github/workflows/auto-merge-dependabot.yml@6ac839a0c4985bd348c4645028ae7147f29f968b
