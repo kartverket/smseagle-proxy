@@ -2,6 +2,6 @@
 [{
   "match": {
     "package_ecosystem": "go_modules",
-    "update_type": "semver:minor"
+    "update_type": "semver:patch"
   }
 }]
