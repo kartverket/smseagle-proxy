@@ -13,7 +13,7 @@ sms:
 debug: true
 port: 8095//default
 ```
-### env variables
+### Environment variables
 ```
 SP_CALL_ACCESS_TOKEN=
 SP_CALL_URL=
@@ -24,21 +24,20 @@ DEBUG=TRUE
 ```
 
 ## Run locally
-### local build:
-```
-1. create config.yaml in root directory of the project
-2. go run .
-```
-### docker:
-```
-1. create .env.smseagle-proxy in the local_testing directory
-2. run docker compose up --build - this will start grafana with oncall
-3. setup grafana oncall:
-    a. go to grafana at http://localhost:3000, user:pass admin:admin
-    b. enable oncall plugin: Administration -> Plugins -> Search for oncall -> Oncall backend url: http://engine:8080
-    c. add smseagle-proxy as an outgoing webhook
-4. to rebuild smseagle-proxy and get logs run "docker compose up --build smseagle_proxy"
-```
+### Local build:
+1. Create `config.yaml` in root directory of the project
+2. `go run .`
 
-### sending requests
-other than an oncall json we need also a header with the `phonenumber` key.
+### Docker:
+
+1. Create `.env.smseagle-proxy` in the `local_testing` directory
+2. Run `docker compose up --build` - this will start Grafana with OnCall
+3. Setup Grafana OnCall:
+- `curl -X POST 'http://admin:admin@localhost:3000/api/plugins/grafana-oncall-app/settings' -H "Content-Type: application/json" -d '{"enabled":true, "jsonData":{"stackId":5, "orgId":100, "onCallApiUrl":"http://engine:8080/", "grafanaUrl":"http://localhost:3000/"}}'`
+- `curl -X POST 'http://admin:admin@localhost:3000/api/plugins/grafana-oncall-app/resources/plugin/install'`
+- Go to Grafana at http://localhost:3000, user:pass `admin:admin`
+- Add `smseagle-proxy` as an outgoing webhook
+4. To rebuild `smseagle-proxy` and get logs run `docker compose up --build smseagle_proxy`
+
+## Sending requests
+Other than an OnCall json we need also a header with the `phonenumber` key.
