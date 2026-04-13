@@ -23,7 +23,7 @@ jobs:
       - name: Setup Golang environment
         uses: actions/setup-go@v6
         with:
-          go-version: "1.24"
+          go-version-file: go.mod
       - name: Log in to the Container registry
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
         with:
